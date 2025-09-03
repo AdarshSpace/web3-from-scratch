@@ -3,6 +3,7 @@ import {createBrowserRouter, Outlet} from 'react-router-dom';
 import Home from './Components/HomeComponent';
 import WalletPassword from './Components/WalletPassword';
 import UnlockPassword from './Components/UnlockPassword';
+import Dashboard from './Components/Dashboard';
 
 
 const AppLayout = () => {
@@ -30,6 +31,10 @@ const AppRouter = createBrowserRouter([
       {
         path: 'unlockpassword',
         element: <UnlockPassword />
+      },
+      {
+        path: 'dashboard',
+        element: <Dashboard/>
       },
     ]
   }
