@@ -1,10 +1,25 @@
 
 import { useState } from 'react';
+import  {Link, useNavigate}  from 'react-router-dom';
 import { Eye, EyeOff, LockKeyhole } from 'lucide-react';
 
 const UnlockPassword = () => {
 
+    const nevigate = useNavigate()
     const [showPassword, setShowPassword] = useState(false);
+    const [inputData, setInputData] = useState('');
+    
+
+    function isValid() {
+        console.log('your Password : ', inputData);
+        const data = localStorage.getItem('WalletPassword');
+
+        if(data === inputData) {
+            console.log("valid User"); 
+            return nevigate('/dashboard');          
+        }
+        else return console.log("Error : password didn't matched");      
+    }
 
     return (
         <div>
@@ -23,12 +38,12 @@ const UnlockPassword = () => {
 
                 <div className='mb-5 relative'>
                     <label className='text-white' > password</label> <br />
-                    <input type={showPassword ? 'text' : 'password'} className='border-1 text-white w-full px-5 py-3 mt-2 rounded-2xl' placeholder='Enter Password' />
+                    <input type={showPassword ? 'text' : 'password'} className='border-1 text-white w-full px-5 py-3 mt-2 rounded-2xl' value={inputData} onChange={(e) => setInputData(e.target.value)} placeholder='Enter Password' />
                     <button className='absolute right-5 bottom-1/9 -translate-y-1/4 text-white ' onClick={() => setShowPassword(!showPassword)}> {showPassword ? <EyeOff size={20} /> : <Eye size={20} />} </button>
                 </div>
 
                 <div className='flex gap-5'>
-                    <button className='font-bold text-black bg-white text-xl border-1 rounded-xl w-full py-2 px-5 my-2 cursor-pointer'>Unlock</button>
+                  <button onClick={isValid} className='font-bold text-black bg-white text-xl border-1 rounded-xl w-full py-2 px-5 my-2 cursor-pointer'>  Unlock </button> 
                 </div>
             </div>
         </div>
