@@ -16,7 +16,10 @@ const WalletPassword = () => {
 
         if(password === confirmPassword) {
             console.log('Password : ', password); 
-            localStorage.setItem('WalletPassword', password);         
+
+            // advice use encrypted to store in local storage
+            localStorage.setItem('WalletPassword', password);   
+                  
             return nevigate('/unlockpassword') }
 
         else return console.log("Error : password didn't matched ");      
