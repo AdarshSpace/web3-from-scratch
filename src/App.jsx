@@ -5,6 +5,7 @@ import WalletPassword from './Components/WalletPassword';
 import UnlockPassword from './Components/UnlockPassword';
 import Dashboard from './Components/Dashboard';
 import Receive from './Components/ReceiveComponents';
+import Send from './Components/SendComponents';
 
 
 const AppLayout = () => {
@@ -40,6 +41,10 @@ const AppRouter = createBrowserRouter([
       {
         path: 'receive',
         element: <Receive/>
+      },
+      {
+        path: 'send',
+        element: <Send/>
       },
     ]
   }

@@ -7,8 +7,18 @@ const TransactionCardComponents = () => {
 
     const navigate = useNavigate();
 
+    function cash(){
+        console.log('cash');
+        
+    }
+
+    function swap(){
+        console.log('swap');      
+    }
+
     function send(){
-        console.log('send');       
+        console.log('send'); 
+        navigate('/send');      
     };
 
     function recieve(){
@@ -29,10 +39,10 @@ const TransactionCardComponents = () => {
                 </div>
 
                 <div className='mb-1.5 flex justify-between gap-5'>
-                    <button onClick={send} className=' text-white  w-13 h-13 flex justify-center items-center border-1 rounded-full'> <Landmark size={30} />   </button>
+                    <button onClick={cash} className=' text-white  w-13 h-13 flex justify-center items-center border-1 rounded-full'> <Landmark size={30} />   </button>
                     <button onClick={recieve} className=' text-white  w-13 h-13 flex justify-center items-center  border-1 rounded-full'> <ArrowDown size={30} />  </button>
                     <button onClick={send} className=' text-white  w-13 h-13 flex justify-center items-center  border-1 rounded-full'> <ArrowUp size={30} />   </button>
-                    <button onClick={send} className=' text-white  w-13 h-13 flex justify-center items-center  border-1 rounded-full'> <ArrowLeftRight size={30} /> </button>
+                    <button onClick={swap} className=' text-white  w-13 h-13 flex justify-center items-center  border-1 rounded-full'> <ArrowLeftRight size={30} /> </button>
                 </div>
 
                 <div className='mb-10 flex justify-between '>
