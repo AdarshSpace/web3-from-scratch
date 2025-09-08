@@ -7,10 +7,13 @@ const Send = () => {
 
     const [amount, setAmount] = useState(0);
     const [recipientKey, setRecipientKey] = useState('');
+    const privateKey = localStorage.getItem('solana privateKey ');
+    console.log(privateKey);
+    
 
     async function sendTransaction(privateKey, to, amount){
-        const connection = new Connection(`..........Link of the get block`);
-        const fromKeypair = Keypair.fromSecretKey(bs58.decoded(privateKey));
+        const connection = new Connection("https://api.devnet.solana.com", "confirmed");
+        const fromKeypair = Keypair.fromSecretKey(bs58.decode(privateKey));
         const toPublicKey = new PublicKey(to);
 
         try{
@@ -20,7 +23,7 @@ const Send = () => {
             // Create Transaction 
             const transaction = new Transaction();
             transaction.recentBlockhash = latestBlockhash.blockhash;
-            transaction.feePayer = fromKeypair.PublicKey();
+            transaction.feePayer = fromKeypair.publicKey;
 
             // Add the transfer instruction 
             transaction.add(
@@ -53,7 +56,7 @@ const Send = () => {
             });
 
             if(confirmation.value.error){
-                throw new error(`Transaction failed : ${confirmation.value.error}`);
+                throw new Error(`Transaction failed : ${confirmation.value.error}`);
             }
 
             console.log('Transaction confirmed : ', confirmation);
@@ -85,7 +88,7 @@ const Send = () => {
 
                 <div className='flex'>
                     <button className='text-white font-bold text-2xl border-1 m-2 px-3 py-2 rounded-2xl w-full' >Cancel</button>
-                    <button className='text-white font-bold text-2xl border-1 m-2 px-3 py-2 rounded-2xl w-full' onClick={()=>sendTransaction(xyz, recipientKey, amount)} >Send</button>
+                    <button className='text-white font-bold text-2xl border-1 m-2 px-3 py-2 rounded-2xl w-full' onClick={()=>sendTransaction(privateKey, recipientKey, amount)} >Send</button>
                 </div>
             </div>
         </div>

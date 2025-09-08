@@ -1,30 +1,50 @@
 
-import React from 'react'
+import React from 'react';
+import { Connection, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import { Landmark, ArrowLeftRight, ArrowUp, ArrowDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-const TransactionCardComponents = () => {
+const TransactionCardComponents = ({balanceUSD, setBalanceSOL, setBalanceUSD}) => {
 
     const navigate = useNavigate();
 
-    function cash(){
-        console.log('cash');
-        
+    const publicKey = localStorage.getItem('solana Public key');
+
+    async function balance(PubkeyString){
+        const connection = new Connection("https://api.devnet.solana.com", "confirmed");
+
+        try{
+            const pubkey = new PublicKey(PubkeyString);
+
+            // fetch balance in lamports 
+            const balanceLamports = await connection.getBalance(pubkey);
+
+            // converts Lamports to Sol
+            const balanceSol = balanceLamports/LAMPORTS_PER_SOL;
+
+             // Fetch current SOL price in USD
+            const priceResponse = await fetch(
+                "https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd"
+              );
+            const priceData = await priceResponse.json();
+            const solPriceUSD = priceData.solana.usd;
+
+            // convert SOL → USD
+            const balanceUSD = balanceSol * solPriceUSD;
+
+            setBalanceSOL(parseFloat(balanceSol.toFixed(4)));
+            setBalanceUSD(balanceUSD.toFixed(2))
+
+            console.log(balanceSol, balanceUSD);
+
+        }
+        catch (error) {
+            console.log("Error : ", error);           
+        }
     }
 
-    function swap(){
-        console.log('swap');      
-    }
-
-    function send(){
-        console.log('send'); 
-        navigate('/send');      
-    };
-
-    function recieve(){
-        console.log('recieve');
-        navigate('/receive')        
-    };
+     balance(publicKey);
+     
 
     return (  
             <div className='mx-15'>
@@ -35,14 +55,14 @@ const TransactionCardComponents = () => {
                     <p>Activity</p>
                 </div>
                 <div className='mb-12 flex justify-center'>
-                    <h1 className='text-white text-5xl'> $ 100 </h1>
+                    <h1 className='text-white text-5xl'> $ {balanceUSD} </h1>
                 </div>
 
                 <div className='mb-1.5 flex justify-between gap-5'>
-                    <button onClick={cash} className=' text-white  w-13 h-13 flex justify-center items-center border-1 rounded-full'> <Landmark size={30} />   </button>
-                    <button onClick={recieve} className=' text-white  w-13 h-13 flex justify-center items-center  border-1 rounded-full'> <ArrowDown size={30} />  </button>
-                    <button onClick={send} className=' text-white  w-13 h-13 flex justify-center items-center  border-1 rounded-full'> <ArrowUp size={30} />   </button>
-                    <button onClick={swap} className=' text-white  w-13 h-13 flex justify-center items-center  border-1 rounded-full'> <ArrowLeftRight size={30} /> </button>
+                    <button onClick={()=> navigate('/cash')} className=' text-white  w-13 h-13 flex justify-center items-center border-1 rounded-full'> <Landmark size={30} />   </button>
+                    <button onClick={()=> navigate('/receive')} className=' text-white  w-13 h-13 flex justify-center items-center  border-1 rounded-full'> <ArrowDown size={30} />  </button>
+                    <button onClick={()=> navigate('/send')} className=' text-white  w-13 h-13 flex justify-center items-center  border-1 rounded-full'> <ArrowUp size={30} />   </button>
+                    <button onClick={()=> navigate('/swap')} className=' text-white  w-13 h-13 flex justify-center items-center  border-1 rounded-full'> <ArrowLeftRight size={30} /> </button>
                 </div>
 
                 <div className='mb-10 flex justify-between '>

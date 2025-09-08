@@ -20,7 +20,7 @@ const WalletPassword = () => {
             // advice use encrypted to store in local storage
             localStorage.setItem('WalletPassword', password);   
                   
-            return nevigate('/unlockpassword') }
+            return nevigate('/mnemonics') }
 
         else return console.log("Error : password didn't matched ");      
     }

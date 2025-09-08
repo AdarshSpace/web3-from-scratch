@@ -1,14 +1,63 @@
-import React, { useState } from 'react';
-import { generateMnemonics } from 'bip39';
+import React, { useEffect, useState } from 'react';
+import { generateMnemonic, mnemonicToSeedSync, } from '@scure/bip39';
+import { wordlist } from "@scure/bip39/wordlists/english.js";
+import { HDKey } from "@scure/bip32";
+import { ed25519 } from "@noble/curves/ed25519";
+import bs58 from "bs58"
+import { useNavigate } from 'react-router-dom';
+import { derivePath } from 'ed25519-hd-key';
+import nacl from 'tweetnacl';
 
 const Mnemonics = () => {
 
+    const nevigate = useNavigate();
+
     const [copied, setCopied] = useState(null);
-    const value = ['mind', 'toddler', 'laundry', 'section', 'interest', 'better', 'eagle', 'escape', 'modify', 'club', 'purity', 'elite']
+    const [word, setWord] = useState([]);
 
-    console.log(navigator); // tells info about the browser
+    const mnemonics = word.join(" ");
 
-    //const words = generateMnemonics(128);
+    async function generate() {
+        const words = await generateMnemonic(wordlist, 128);
+        const wordArray = words.split(" ");
+        setWord(wordArray);
+    };
+
+    // helper function to convert Uint8Array → hex
+    function toHex(uint8arr) {
+        return Array.from(uint8arr)
+            .map((b) => b.toString(16).padStart(2, "0"))
+            .join("");
+    }
+
+    function createSeed() {
+        try {
+            const seed = mnemonicToSeedSync(mnemonics);
+
+            // Convert Uint8Array → hex for derivePath
+            const seedHex = toHex(seed);
+
+            const solPath = "m/44'/501'/0'/0'";
+            const derived = derivePath(solPath, seedHex);
+
+            // Create Solana keypair
+            const keypair = nacl.sign.keyPair.fromSeed(derived.key);
+
+            const privateKey = bs58.encode(keypair.secretKey);
+            const publicKey = bs58.encode(keypair.publicKey);
+
+            localStorage.setItem("solanaPublicKey", publicKey);
+            localStorage.setItem("solanaPrivateKey", privateKey);
+
+            return { publicKey, privateKey };
+        }
+        catch (error) {
+            console.log('Error : ', error);
+        }
+    }
+
+    useEffect(() => { generate() }, []);
+
     const handleCopy = async (text, index) => {
         try {
             await navigator.clipboard.writeText(text)
@@ -32,9 +81,9 @@ const Mnemonics = () => {
 
                     <div className='bg-gray-500 rounded-2xl p-0 m-0 mx-10 my-0'>
                         <div className='grid grid-cols-4 gap-x-4 gap-y-4 bg-gray-500 rounded-2xl p-5 py-10 mx-5 mt-5'>
-                            {value.map((item, index) => {
+                            {word.map((item, index) => {
                                 return (
-                                    <div className='border-2 flex items-center border-gray-500 rounded-xl bg-gray-600 px-1 h-[50px] '>
+                                    <div key={index} className='border-2 flex items-center border-gray-500 rounded-xl bg-gray-600 px-1 h-[50px] '>
                                         <p className='text-gray-400  mx-1 mr-2 '> {index + 1}.</p>
                                         <p className='text-gray-300  mx-0 whitespace-nowrap mr-2'>{item}</p>
                                     </div>
@@ -43,7 +92,7 @@ const Mnemonics = () => {
                         </div>
 
                         <div className='border-1 border-red-500 bg-red-500/20 rounded-2xl mx-11 mb-5 p-2 '>
-                                <p className='text-red-300 p-2'> ⚠️  Never Share this Phrase with anyone. These words can steal your assets. Store it securely offline </p>
+                            <p className='text-red-300 p-2'> ⚠️  Never Share this Phrase with anyone. These words can steal your assets. Store it securely offline </p>
                         </div>
                     </div>
                 </div>
@@ -55,7 +104,7 @@ const Mnemonics = () => {
 
                 <div className='flex justify-between mx-12 my-2 py-2'>
                     <button className='border-1 text-white py-2 px-22 rounded-xl font-black'> ← Back</button>
-                    <button className='border-1 text-white py-4 px-14 rounded-xl font-black '> Create Password</button>
+                    <button className='border-1 text-white py-4 px-14 rounded-xl font-black' onClick={createSeed}> Create Password</button>
                 </div>
             </div>
         </div>

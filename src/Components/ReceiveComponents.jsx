@@ -5,7 +5,7 @@ const Receive = () => {
 
   const [copy, setCopy] = useState(false);
 
-  const address = '0x7c5f85237c8eE80B61A679b8D33a6406beb65309';
+  const address = localStorage.getItem('solana Public key ');
 
   const handleCopy = () => {
     navigator.clipboard.writeText(address).then(() => {
@@ -37,7 +37,7 @@ const Receive = () => {
         </div>
 
         <div className="flex justify-center text-gray-800 text-center mb-10  ">
-          <p className=' w-60 '>This address can only receive assets on Ethereum</p>
+          <p className=' w-60 '>This address can only receive assets on Solana</p>
         </div>
 
       </div>
