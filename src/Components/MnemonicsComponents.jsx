@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { generateMnemonic, mnemonicToSeedSync, } from '@scure/bip39';
 import { wordlist } from "@scure/bip39/wordlists/english.js";
-import { HDKey } from "@scure/bip32";
-import { ed25519 } from "@noble/curves/ed25519";
 import bs58 from "bs58"
 import { useNavigate } from 'react-router-dom';
 import { derivePath } from 'ed25519-hd-key';
 import nacl from 'tweetnacl';
+
 
 const Mnemonics = () => {
 
@@ -23,22 +22,19 @@ const Mnemonics = () => {
         setWord(wordArray);
     };
 
-    // helper function to convert Uint8Array → hex
-    function toHex(uint8arr) {
-        return Array.from(uint8arr)
-            .map((b) => b.toString(16).padStart(2, "0"))
-            .join("");
-    }
 
     function createSeed() {
         try {
             const seed = mnemonicToSeedSync(mnemonics);
-
-            // Convert Uint8Array → hex for derivePath
-            const seedHex = toHex(seed);
+            console.log('SEED : ',seed);
+            
+            
 
             const solPath = "m/44'/501'/0'/0'";
-            const derived = derivePath(solPath, seedHex);
+            const derived = derivePath(solPath, Buffer.from(seed));
+
+            console.log('Derived - ',derived);
+            
 
             // Create Solana keypair
             const keypair = nacl.sign.keyPair.fromSeed(derived.key);
@@ -46,10 +42,13 @@ const Mnemonics = () => {
             const privateKey = bs58.encode(keypair.secretKey);
             const publicKey = bs58.encode(keypair.publicKey);
 
+            console.log('PrivateKey and PublicKey - ',privateKey, publicKey);           
+
             localStorage.setItem("solanaPublicKey", publicKey);
             localStorage.setItem("solanaPrivateKey", privateKey);
 
-            return { publicKey, privateKey };
+            return nevigate('/unlockpassword');
+
         }
         catch (error) {
             console.log('Error : ', error);

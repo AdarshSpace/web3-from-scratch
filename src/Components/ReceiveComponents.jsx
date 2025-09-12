@@ -5,7 +5,7 @@ const Receive = () => {
 
   const [copy, setCopy] = useState(false);
 
-  const address = localStorage.getItem('solana Public key ');
+  const address = localStorage.getItem('solanaPublicKey');
 
   const handleCopy = () => {
     navigator.clipboard.writeText(address).then(() => {

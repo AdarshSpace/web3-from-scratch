@@ -7,7 +7,7 @@ const Send = () => {
 
     const [amount, setAmount] = useState(0);
     const [recipientKey, setRecipientKey] = useState('');
-    const privateKey = localStorage.getItem('solana privateKey ');
+    const privateKey = localStorage.getItem('solanaPrivateKey');
     console.log(privateKey);
     
 

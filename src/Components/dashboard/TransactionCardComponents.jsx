@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { Connection, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import { Landmark, ArrowLeftRight, ArrowUp, ArrowDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -8,7 +7,7 @@ const TransactionCardComponents = ({balanceUSD, setBalanceSOL, setBalanceUSD}) =
 
     const navigate = useNavigate();
 
-    const publicKey = localStorage.getItem('solana Public key');
+    const publicKey = localStorage.getItem('solanaPublicKey');
 
     async function balance(PubkeyString){
         const connection = new Connection("https://api.devnet.solana.com", "confirmed");
